@@ -61,16 +61,18 @@ create table Logout_Token (
    );
    
    
-   create table Topic_Users (
-	   id bigint unsigned not null auto_increment,
-       
-       bigint unsigned not null,
-   userid bigint unsigned not null,
-    time  bigint unsigned not null,
-   CONSTRAINT  fk_topic_2 foreign key(topicid) references Topic(id) on delete cascade,
-	CONSTRAINT  fk_user_3  foreign key(userid) references User(id) on delete cascade,
-   primary key(id)
-   );
+CREATE TABLE Topic_Users (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `topicid` bigint(20) unsigned NOT NULL,
+  `userid` bigint(20) unsigned NOT NULL,
+  `time` bigint(20) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_topic_2` (`topicid`),
+  KEY `fk_user_3` (`userid`),
+  CONSTRAINT `fk_topic_2` FOREIGN KEY (`topicid`) REFERENCES `Topic` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_user_3` FOREIGN KEY (`userid`) REFERENCES `User` (`id`) ON DELETE CASCADE
+) ;
+
    
    
    

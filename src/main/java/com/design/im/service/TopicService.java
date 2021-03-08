@@ -118,6 +118,7 @@ public class TopicService {
                     }else {
                         vo.setOnLine(false);
                     }
+                    vo.setUserId(item.getId());
                     users.add(vo);
                 });
             }

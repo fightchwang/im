@@ -11,4 +11,5 @@ public class UserVo {
     private String email;
     @ApiModelProperty(hidden = true)
     private boolean onLine;
+    private Long userId;
 }

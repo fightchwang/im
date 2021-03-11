@@ -2,6 +2,7 @@ package com.design.im.api;
 
 import com.design.im.model.*;
 import com.design.im.model.po.UserPO;
+import com.design.im.service.ImmessageService;
 import com.design.im.service.LogOutTokenService;
 import com.design.im.service.TopicService;
 import com.design.im.service.UserService;
@@ -31,6 +32,9 @@ public class IMApiController {
 
     @Autowired
     private LogOutTokenService logOutTokenService;
+
+    @Autowired
+    private ImmessageService immessageService;
 
 
     @PostMapping("/login")
@@ -228,6 +232,27 @@ public class IMApiController {
         CommonResponse response = new CommonResponse();
         response.setCode(HttpStatus.OK.value());
         response.setMsg("Success");
+        return response;
+    }
+
+
+    @GetMapping("/message/pull")
+    public CommonResponse pullMsg(@RequestParam Boolean isGroupMessage, @RequestParam long topicId,
+                                  @RequestParam int page,  @RequestParam int pageSize,
+                                  @RequestParam(required = false) Long toUserId){
+        CommonResponse response = new CommonResponse();
+        response.setCode(HttpStatus.OK.value());
+        response.setMsg("Success");
+
+        try {
+            Long fromUserId =  LoginUserHolder.getLoginUserFromContext().getUserId();
+
+            response.setData(immessageService.getMessageListOfUser(isGroupMessage, topicId, page, pageSize, toUserId, fromUserId));
+        }catch (Exception ex){
+            response.setCode(HttpStatus.BAD_REQUEST.value());
+            response.setMsg("Can't get the topic question list");
+        }
+
         return response;
     }
 

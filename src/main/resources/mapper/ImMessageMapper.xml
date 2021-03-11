@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.design.im.dao.ImMessageMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.design.im.model.po.ImMessagePO">
+        <id column="id" property="id"/>
+        <result column="toUserId" property="toUserId"/>
+        <result column="fromUserId" property="fromUserId"/>
+        <result column="topicId" property="topicId"/>
+        <result column="isgroupmessage" property="isgroupmessage"/>
+        <result column="msgcontent" property="msgcontent"/>
+        <result column="time" property="time"/>
+    </resultMap>
+
+
+    <select id="getSingleChatMessageList" resultMap="BaseResultMap" parameterType="com.design.im.model.MessageQueryDto">
+    SELECT
+    *
+    FROM
+    (SELECT
+        *
+    FROM
+        im_message
+    WHERE
+        toUserId = #{param.toUserId} AND fromUserId = #{param.fromUserId}
+            AND topicId = #{param.topicId} UNION SELECT
+        *
+    FROM
+        im_message
+    WHERE
+        toUserId =  #{param.fromUserId} AND fromUserId = #{param.toUserId}
+            AND topicId =  #{param.topicId} ) t
+  ORDER BY t.id DESC
+  LIMIT  #{param.page} , #{param.pageSize};
+    </select>
+    <select id="toalCountOfSingleChatMessageList" parameterType="com.design.im.model.MessageQueryDto" resultType="java.lang.Integer">
+          SELECT
+    count(*)
+    FROM
+    (SELECT
+        *
+    FROM
+        im_message
+    WHERE
+        toUserId = #{param.toUserId} AND fromUserId = #{param.fromUserId}
+            AND topicId = #{param.topicId} UNION SELECT
+        *
+    FROM
+        im_message
+    WHERE
+        toUserId =  #{param.fromUserId} AND fromUserId = #{param.toUserId}
+            AND topicId =  #{param.topicId} ) t
+    </select>
+</mapper>

@@ -83,6 +83,7 @@ public class IMWebSocket {
             Long toUserId = imMessage.getToUserId();
             if(!imMessage.isGroupMessage()){
                 //单独的消息
+                imMessage.setTopicId(0L);
                 if(userIdSessionMap.get(toUserId) != null){
                     //用户在线，直接发送
                     sendMessage(finalMsg, userIdSessionMap.get(toUserId));
@@ -90,6 +91,7 @@ public class IMWebSocket {
 
             }else {
                 //群聊
+                imMessage.setTopicId(null);
                 //获取topicId对应的用户
                 List<UserVo> users = topicService.getTopicUsers(imMessage.getTopicId());
                 if(!CollectionUtils.isEmpty(users)){

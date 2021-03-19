@@ -32,7 +32,7 @@
         toUserId =  #{param.fromUserId} AND fromUserId = #{param.toUserId}
             AND topicId =  #{param.topicId} ) t
   ORDER BY t.id DESC
-  LIMIT  #{param.page} , #{param.pageSize};
+  LIMIT  #{param.offset} , #{param.pageSize};
     </select>
     <select id="toalCountOfSingleChatMessageList" parameterType="com.design.im.model.MessageQueryDto" resultType="java.lang.Integer">
           SELECT

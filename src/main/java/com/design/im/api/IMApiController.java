@@ -118,7 +118,7 @@ public class IMApiController {
         response.setMsg("Success");
 
         try {
-            topicService.createTopic(createTopicVo, LoginUserHolder.getLoginUserFromContext().getUserId());
+            response.setData(topicService.createTopic(createTopicVo, LoginUserHolder.getLoginUserFromContext().getUserId()));
         }catch (Exception ex){
             response.setCode(HttpStatus.BAD_REQUEST.value());
             response.setMsg(ex.getMessage());

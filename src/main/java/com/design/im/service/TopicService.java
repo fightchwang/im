@@ -37,7 +37,7 @@ public class TopicService {
     private UserMapper userMapper;
 
     @Transactional
-    public void createTopic(CreateTopicVo createTopicVo, long userId){
+    public long createTopic(CreateTopicVo createTopicVo, long userId){
         if(CollectionUtils.isEmpty(createTopicVo.getQuestions())){
             throw new IllegalArgumentException("question and answer are required");
         }
@@ -69,6 +69,7 @@ public class TopicService {
             topicFaqMapper.insert(faq);
         }
 
+        return topic.getId();
     }
 
 

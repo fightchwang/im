@@ -58,6 +58,14 @@ public class ImmessageService {
     public PullMsgVo<ImMessagePO> getMessageListOfUser(Boolean isGroupMessage, Long topicId, int page, int pageSize, Long toUserId, Long fromUserId){
         QueryWrapper<ImMessagePO> queryWrapper = new QueryWrapper<>();
         PullMsgVo<ImMessagePO> response = new PullMsgVo<ImMessagePO>();
+        if(page <= 0){
+            page = 1;
+        }
+        if(pageSize < 10){
+            pageSize = 10;
+        }
+
+
         response.setPage(page);
         response.setPageSize(pageSize);
 
@@ -77,8 +85,9 @@ public class ImmessageService {
 
         }else {
             //peer to peer
+            Integer offset = (page - 1) * pageSize;
             MessageQueryDto dto = MessageQueryDto.builder().fromUserId(fromUserId).topicId(topicId)
-                    .toUserId(toUserId).page(page).pageSize(pageSize).build();
+                    .toUserId(toUserId).page(page).pageSize(pageSize).offset(offset).build();
             List<ImMessagePO> msgs = messageMapper.getSingleChatMessageList(dto);
             Integer totalCount = messageMapper.toalCountOfSingleChatMessageList(dto);
             Collections.sort(msgs, Comparator.comparingLong(ImMessagePO::getId));

@@ -102,11 +102,17 @@ public class IMApiController {
     public CommonResponse register(@RequestBody UserVo userVo){
         CommonResponse response = new CommonResponse();
         //get hashed password
-        String hashedPassowrd = Pbkdf2Sha256Util.encode(userVo.getPassword());
-        userVo.setPassword(hashedPassowrd);
-        userService.saveUser(userVo);
-        response.setCode(HttpStatus.OK.value());
-        response.setMsg("User register success");
+        try {
+            String hashedPassowrd = Pbkdf2Sha256Util.encode(userVo.getPassword());
+            userVo.setPassword(hashedPassowrd);
+            userService.saveUser(userVo);
+            response.setCode(HttpStatus.OK.value());
+            response.setMsg("User register success");
+        }catch (Exception ex){
+            response.setCode(HttpStatus.BAD_REQUEST.value());
+            response.setMsg(ex.getMessage());
+        }
+
         return response;
     }
 

@@ -23,6 +23,11 @@ public class UserService {
     }
 
     public void saveUser(UserVo userVo){
+        UserPO existed = this.getUserByEMail(userVo.getEmail());
+        if(existed != null && userVo.getEmail().equals(existed.getEmail())){
+            throw new RuntimeException("User Already exist for "+ userVo.getEmail());
+        }
+
         UserPO userPO = new UserPO();
         userPO.setFirstname(userVo.getFirstname());
         userPO.setSurname(userVo.getSurname());

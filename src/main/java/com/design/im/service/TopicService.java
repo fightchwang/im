@@ -86,7 +86,7 @@ public class TopicService {
 
     public String getAnswer(Long topicFaqId) {
         QueryWrapper<TopicFaqPO> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("topicid", topicFaqId);
+        queryWrapper.eq("id", topicFaqId);
         TopicFaqPO faq = topicFaqMapper.selectOne(queryWrapper);
         return faq == null ? "" : faq.getAnswer();
     }

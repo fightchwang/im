@@ -80,13 +80,13 @@ public class TopicService {
 
     public List<TopicFaqPO> topicFaqPOList(Long topicId){
         QueryWrapper<TopicFaqPO> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("id", topicId);
+        queryWrapper.eq("topicid", topicId);
         return topicFaqMapper.selectList(queryWrapper).stream().peek(item -> item.setAnswer("")).collect(Collectors.toList());
     }
 
     public String getAnswer(Long topicFaqId) {
         QueryWrapper<TopicFaqPO> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("id", topicFaqId);
+        queryWrapper.eq("topicid", topicFaqId);
         TopicFaqPO faq = topicFaqMapper.selectOne(queryWrapper);
         return faq == null ? "" : faq.getAnswer();
     }

@@ -200,13 +200,13 @@ public class IMApiController {
 
 
     @GetMapping("/topic/question/answer")
-    public CommonResponse answer(@RequestParam Long topicFaqId){
+    public CommonResponse answer(@RequestParam Long topicId){
         CommonResponse response = new CommonResponse();
         response.setCode(HttpStatus.OK.value());
         response.setMsg("Success");
 
         try {
-            response.setData(topicService.getAnswer(topicFaqId));
+            response.setData(topicService.getAnswer(topicId));
         }catch (Exception ex){
             response.setCode(HttpStatus.BAD_REQUEST.value());
             response.setMsg("Can't get the topic question list");

@@ -81,7 +81,7 @@ public class IMWebSocket {
         String finalMsg = JSONObject.toJSONString(imMessage);
         if(imMessage != null){
             Long toUserId = imMessage.getToUserId();
-            if(!imMessage.isGroupMessage()){
+            if(!imMessage.getGroupMessage()){
                 //单独的消息
                 imMessage.setTopicId(0L);
                 if(userIdSessionMap.get(toUserId) != null){
@@ -91,7 +91,6 @@ public class IMWebSocket {
 
             }else {
                 //群聊
-                imMessage.setTopicId(null);
                 //获取topicId对应的用户
                 List<UserVo> users = topicService.getTopicUsers(imMessage.getTopicId());
                 if(!CollectionUtils.isEmpty(users)){

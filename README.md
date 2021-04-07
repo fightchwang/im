@@ -6,13 +6,13 @@
 
     url: ws://localhost:8080/api/im/123/234
     msg(json):
-    {"toUserId":2,"topicId":0,"isGroupMessage":false,"msgContent":"hello word"}
+    {"toUserId":2,"topicId":0,"groupMessage":false,"msgContent":"hello word"}
 
 3. send to group(represented by topic Id, like 7)
 
     url: ws://localhost:8080/api/im/123/234
     msg(json):
-    {"topicId":7,"isGroupMessage":true,"msgContent":"hello word"}
+    {"topicId":7,"groupMessage":true,"msgContent":"hello word"}
 
 
 all detail about msg refer IMMessage.java

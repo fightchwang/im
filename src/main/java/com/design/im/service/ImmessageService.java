@@ -38,7 +38,7 @@ public class ImmessageService {
         queryWrapper.eq("fromUserId", fromUserId);
         queryWrapper.eq("toUserId", imMessage.getToUserId());
         queryWrapper.eq("topicId", imMessage.getTopicId());
-        queryWrapper.eq("isgroupmessage", imMessage.isGroupMessage());
+        queryWrapper.eq("isgroupmessage", imMessage.getGroupMessage());
         queryWrapper.eq("time", imMessage.getTime());
         Long id = messageMapper.selectOne(queryWrapper).getId();
 

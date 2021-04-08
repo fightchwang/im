@@ -9,8 +9,10 @@ import com.design.im.service.TopicService;
 import com.design.im.util.LoginUserHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.websocket.*;
@@ -32,11 +34,16 @@ public class IMWebSocket {
     private static Map<Long, Session> userIdSessionMap = new ConcurrentHashMap<>();
 
 
-    @Autowired
-    private ImmessageService immessageService;
+    private volatile ImmessageService immessageService;
 
-    @Autowired
-    private TopicService topicService;
+    private volatile TopicService topicService;
+
+    private static ApplicationContext applicationContext;
+
+    public static void setApplicationContext(ApplicationContext applicationContext) {
+        IMWebSocket.applicationContext = applicationContext;
+    }
+
 
 
     /**
@@ -73,6 +80,15 @@ public class IMWebSocket {
     @OnMessage
     public void onMessage(String message, Session session, @PathParam("token") String token, @PathParam("refresh_token") String refreshToken) {
         log.info("服务端收到客户端[{}]的消息:{}", session.getId(), message);
+
+        if(topicService == null){
+            topicService = applicationContext.getBean(TopicService.class);
+        }
+
+        if(immessageService == null){
+            immessageService = applicationContext.getBean(ImmessageService.class);
+        }
+
         IMMessage imMessage = JSONObject.parseObject(message, IMMessage.class);
         Long fromUserId = LoginUserHolder.getUserId(token);
         imMessage.setFromUserId(fromUserId);
@@ -91,6 +107,8 @@ public class IMWebSocket {
 
             }else {
                 //群聊
+                //不针对某一个用户发送
+                imMessage.setToUserId(0L);
                 //获取topicId对应的用户
                 List<UserVo> users = topicService.getTopicUsers(imMessage.getTopicId());
                 if(!CollectionUtils.isEmpty(users)){

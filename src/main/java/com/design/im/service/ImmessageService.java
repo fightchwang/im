@@ -31,7 +31,9 @@ public class ImmessageService {
     public void insertMessage(IMMessage imMessage, long fromUserId){
         ImMessagePO messagePO = new ImMessagePO();
         BeanUtils.copyProperties(imMessage, messagePO);
+        messagePO.setIsgroupmessage(imMessage.getGroupMessage());
         messagePO.setFromUserId(fromUserId);
+        messagePO.setMsgcontent(imMessage.getMsgContent());
         messageMapper.insert(messagePO);
 
         QueryWrapper<ImMessagePO> queryWrapper = new QueryWrapper<>();

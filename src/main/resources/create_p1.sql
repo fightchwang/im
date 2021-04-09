@@ -73,6 +73,9 @@ CREATE TABLE Topic_Users (
   CONSTRAINT `fk_user_3` FOREIGN KEY (`userid`) REFERENCES `User` (`id`) ON DELETE CASCADE
 ) ;
 
-   
+
+
+#execute this
+alter table Topic_Users  add CONSTRAINT unique_userId unique(topicid, userid);
    
    

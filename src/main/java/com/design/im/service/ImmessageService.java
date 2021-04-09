@@ -7,6 +7,7 @@ import com.design.im.dao.ImMessageMapper;
 import com.design.im.model.IMMessage;
 import com.design.im.model.MessageQueryDto;
 import com.design.im.model.PullMsgVo;
+import com.design.im.model.UserVo;
 import com.design.im.model.po.ImMessageAtListPO;
 import com.design.im.model.po.ImMessagePO;
 import org.springframework.beans.BeanUtils;

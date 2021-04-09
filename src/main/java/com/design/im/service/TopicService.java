@@ -6,6 +6,7 @@ import com.design.im.dao.TopicMapper;
 import com.design.im.dao.TopicUsersMapper;
 import com.design.im.dao.UserMapper;
 import com.design.im.model.CreateTopicVo;
+import com.design.im.model.MasterInfo;
 import com.design.im.model.UserVo;
 import com.design.im.model.po.TopicFaqPO;
 import com.design.im.model.po.TopicPO;
@@ -86,14 +87,24 @@ public class TopicService {
         return topicFaqMapper.selectList(queryWrapper).stream().peek(item -> item.setAnswer("")).collect(Collectors.toList());
     }
 
-    public String getAnswer(Long topicFaqId) {
+    public TopicFaqPO getAnswer(Long topicFaqId) {
         QueryWrapper<TopicFaqPO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("id", topicFaqId);
         TopicFaqPO faq = topicFaqMapper.selectOne(queryWrapper);
-        return faq == null ? "" : faq.getAnswer();
+        return faq;
     }
 
     public void insertUserToTopic(Long topicId, Long userId){
+        QueryWrapper<TopicUsersPO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("topicid", topicId);
+        queryWrapper.eq("userid", userId);
+        int count = topicUsersMapper.selectCount(queryWrapper);
+
+        if(count > 0){
+            //user have already entered this topic, no need to insert a new record
+            return;
+        }
+
         TopicUsersPO topicUsersPO = new TopicUsersPO();
         topicUsersPO.setTopicid(topicId);
         topicUsersPO.setUserid(userId);
@@ -135,5 +146,31 @@ public class TopicService {
         }
 
         return users;
+    }
+
+
+
+    public MasterInfo masterInfo(Long topicId){
+        QueryWrapper<TopicPO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("id", topicId);
+        TopicPO topicPO  = topicMapper.selectOne(queryWrapper);
+        if(topicPO == null){
+            throw new RuntimeException(topicId + "Not found");
+        }
+
+        QueryWrapper<UserPO> userVoQueryWrapper = new QueryWrapper<>();
+        userVoQueryWrapper.eq("id", topicPO.getTopicmaster());
+        UserPO userPO = userMapper.selectOne(userVoQueryWrapper);
+
+        if(userPO == null){
+            throw new RuntimeException("master not exist for topic: "+ topicId);
+        }
+
+        MasterInfo response = new MasterInfo();
+        response.setFirstname(userPO.getFirstname());
+        response.setLastname(userPO.getSurname());
+        response.setFullName(userPO.getFirstname()+" "+ userPO.getSurname());
+        response.setUserId(userPO.getId());
+        return response;
     }
 }

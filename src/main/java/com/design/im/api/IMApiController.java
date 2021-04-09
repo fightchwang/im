@@ -1,6 +1,7 @@
 package com.design.im.api;
 
 import com.design.im.model.*;
+import com.design.im.model.po.TopicFaqPO;
 import com.design.im.model.po.UserPO;
 import com.design.im.service.ImmessageService;
 import com.design.im.service.LogOutTokenService;
@@ -11,6 +12,7 @@ import com.design.im.util.JwtUtils;
 import com.design.im.util.LoginUserHolder;
 import com.design.im.util.Pbkdf2Sha256Util;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -206,7 +208,17 @@ public class IMApiController {
         response.setMsg("Success");
 
         try {
-            response.setData(topicService.getAnswer(topicFaqId));
+            MasterInfoAndAnswer andAnswer = new MasterInfoAndAnswer();
+            andAnswer.setTopicFaqId(topicFaqId);
+            TopicFaqPO topicAnswer = topicService.getAnswer(topicFaqId);
+            andAnswer.setAnswer(topicAnswer == null ? " " : topicAnswer.getAnswer());
+
+            if(topicAnswer != null){
+                MasterInfo masterInfo = topicService.masterInfo(topicAnswer.getTopicid());
+                BeanUtils.copyProperties(masterInfo, andAnswer);
+            }
+
+            response.setData(andAnswer);
         }catch (Exception ex){
             response.setCode(HttpStatus.BAD_REQUEST.value());
             response.setMsg("Can't get the topic question list");
@@ -263,5 +275,20 @@ public class IMApiController {
     }
 
 
+    @GetMapping("/topic/question/master")
+    public CommonResponse masterInfo(@RequestParam Long topicId){
+        CommonResponse response = new CommonResponse();
+        response.setCode(HttpStatus.OK.value());
+        response.setMsg("Success");
+
+        try {
+            response.setData(topicService.masterInfo(topicId));
+        }catch (Exception ex){
+            response.setCode(HttpStatus.BAD_REQUEST.value());
+            response.setMsg("Can't get the topic master info");
+        }
+
+        return response;
+    }
 
 }

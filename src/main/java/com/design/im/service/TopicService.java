@@ -20,6 +20,8 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -106,20 +108,26 @@ public class TopicService {
         List<TopicUsersPO> usersInDb = topicUsersMapper.selectList(queryWrapper);
         if(!CollectionUtils.isEmpty(usersInDb)){
             QueryWrapper<UserPO> userQueryMaaper = new QueryWrapper<>();
-            List<Long> userIds = usersInDb.stream().map(TopicUsersPO::getUserid).collect(Collectors.toList());
+            Set<Long> userIds = usersInDb.stream().map(TopicUsersPO::getUserid).collect(Collectors.toSet());
             userQueryMaaper.in("id", userIds);
             List<UserPO> userPos = userMapper.selectList(userQueryMaaper);
             if(!CollectionUtils.isEmpty(userPos)){
+                Map<Long, UserPO> upm = userPos.stream().collect(Collectors.toMap(UserPO::getId, i->i ));
                 usersInDb.stream().forEach(item ->{
                     UserVo vo = new UserVo();
                     BeanUtils.copyProperties(item, vo);
-                    if(LoginUserHolder.getLoginUserById(item.getId()) != null){
+                    if(LoginUserHolder.getLoginUserById(item.getUserid()) != null){
                         //this user is online
                         vo.setOnLine(true);
                     }else {
                         vo.setOnLine(false);
                     }
-                    vo.setUserId(item.getId());
+                    UserPO cur = upm.get(item.getUserid());
+                    if (cur != null) {
+                        vo.setFirstname(cur.getFirstname());
+                        vo.setSurname(cur.getSurname());
+                        vo.setUserId(item.getUserid());
+                    }
                     users.add(vo);
                 });
             }

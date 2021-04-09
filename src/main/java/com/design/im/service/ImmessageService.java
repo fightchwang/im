@@ -56,7 +56,7 @@ public class ImmessageService {
         }
 
     }
-    
+
     public PullMsgVo<ImMessagePO> getMessageListOfUser(Boolean isGroupMessage, Long topicId, int page, int pageSize, Long toUserId, Long fromUserId){
         QueryWrapper<ImMessagePO> queryWrapper = new QueryWrapper<>();
         PullMsgVo<ImMessagePO> response = new PullMsgVo<ImMessagePO>();
@@ -78,7 +78,7 @@ public class ImmessageService {
             Page<ImMessagePO> pager = new Page<>(page, pageSize);
             Page<ImMessagePO> result = messageMapper.selectPage(pager, queryWrapper);
 
-            if(CollectionUtils.isEmpty(result.getRecords())){
+            if(!CollectionUtils.isEmpty(result.getRecords())){
                 List<ImMessagePO> msgs = result.getRecords();
                 Collections.sort(msgs, Comparator.comparingLong(ImMessagePO::getId));
                 response.setMsg(result.getRecords());

@@ -90,8 +90,11 @@ public class IMWebSocket {
         }
 
         IMMessage imMessage = JSONObject.parseObject(message, IMMessage.class);
-        Long fromUserId = LoginUserHolder.getUserId(token);
-        imMessage.setFromUserId(fromUserId);
+        Long fromUserId = imMessage.getFromUserId();
+        if(fromUserId == null){
+            fromUserId = LoginUserHolder.getUserId(token);
+            imMessage.setFromUserId(fromUserId);
+        }
         imMessage.setTime(System.currentTimeMillis());
 
         String finalMsg = JSONObject.toJSONString(imMessage);
